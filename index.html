@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HackShield</title>
+<meta name="theme-color" content="#0a0e1a">
+<link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div class="bg-blobs">
+  <span class="blob blob-1"></span>
+  <span class="blob blob-2"></span>
+  <span class="blob blob-3"></span>
+</div>
+
+<div id="toast-container"></div>
+
+<div class="app-shell">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">🛡️ HackShield</div>
+    <ul class="nav-list">
+      <li class="nav-item active" data-view="dashboard"><span class="nav-icon">📊</span> Dashboard</li>
+      <li class="nav-item" data-view="browser-check"><span class="nav-icon">🔍</span> Browser Security Check</li>
+      <li class="nav-item" data-view="url-scanner"><span class="nav-icon">🔗</span> URL Scanner</li>
+      <li class="nav-item" data-view="qr-scanner"><span class="nav-icon">📷</span> QR Scanner</li>
+      <li class="nav-item" data-view="quiz"><span class="nav-icon">🧠</span> Security Quiz</li>
+      <li class="nav-item" data-view="security-tips"><span class="nav-icon">💡</span> Security Tips</li>
+      <li class="nav-item" data-view="settings"><span class="nav-icon">⚙️</span> Settings</li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- DASHBOARD -->
+    <section id="view-dashboard" class="view view-dashboard active">
+      <h1 class="view-title">📊 Dashboard</h1>
+
+      <div class="stats-grid">
+        <div class="card stat-card">
+          <div class="stat-label">Overall Score</div>
+          <div class="stat-value" id="overall-score">--</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Threat Level</div>
+          <div class="stat-value" id="threat-level">--</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Checks Passed</div>
+          <div class="stat-value" id="checks-passed">--</div>
+        </div>
+      </div>
+
+      <div class="card score-guide-card">
+        <h3>📘 Score Guide</h3>
+        <ul id="score-guide-list">
+          <li data-tier="excellent"><strong>90–100</strong> — Excellent. Your browser is well-configured for privacy and security.</li>
+          <li data-tier="good"><strong>70–89</strong> — Good. Minor improvements recommended.</li>
+          <li data-tier="fair"><strong>50–69</strong> — Fair. Several settings could be improved.</li>
+          <li data-tier="poor"><strong>0–49</strong> — Poor. Your browser configuration has significant gaps.</li>
+        </ul>
+      </div>
+
+      <div class="card info-card">
+        <h3>🕒 Last Scan</h3>
+        <p id="last-scan-info">No scans yet. Run a Browser Security Check to see results here.</p>
+      </div>
+    </section>
+
+    <!-- BROWSER SECURITY CHECK -->
+    <section id="view-browser-check" class="view view-browser-check">
+      <h1 class="view-title">🔍 Browser Security Check</h1>
+      <p class="view-subtitle">Checks your current browser's exposed settings — not your device, OS, or apps.</p>
+
+      <button id="run-audit-btn" class="btn-primary">▶ Run Browser Check</button>
+
+      <div id="scanner-checks-list" class="checks-grid"></div>
+
+      <div class="card history-card">
+        <div class="history-header">
+          <h3>📜 Scan History</h3>
+          <div class="history-actions">
+            <button id="refresh-scan-history" class="btn-small">🔄 Refresh</button>
+            <button id="clear-history-btn" class="btn-small btn-danger-outline">🗑 Clear</button>
+          </div>
+        </div>
+        <ul id="scan-history-list" class="history-list"></ul>
+      </div>
+    </section>
+
+    <!-- URL SCANNER -->
+    <section id="view-url-scanner" class="view view-url-scanner">
+      <h1 class="view-title">🔗 URL Scanner</h1>
+      <p class="view-subtitle">Paste a link to check it for common red flags.</p>
+
+      <div class="url-input-row">
+        <input type="text" id="url-input" placeholder="https://example.com">
+        <button id="scan-url-btn" class="btn-primary">Scan URL</button>
+      </div>
+
+      <div id="url-result-container" style="display:none;">
+        <div id="url-result-card" class="card result-card"></div>
+      </div>
+
+      <div class="card history-card">
+        <div class="history-header">
+          <h3>📜 URL Scan History</h3>
+          <div class="history-actions">
+            <button id="refresh-url-history" class="btn-small">🔄 Refresh</button>
+            <button id="clear-url-history-btn" class="btn-small btn-danger-outline">🗑 Clear</button>
+          </div>
+        </div>
+        <ul id="url-history-list" class="history-list"></ul>
+      </div>
+    </section>
+
+    <!-- QR SCANNER -->
+    <section id="view-qr-scanner" class="view view-qr-scanner">
+      <h1 class="view-title">📷 QR Scanner</h1>
+      <p class="view-subtitle">Upload an image containing a QR code to decode and check it.</p>
+
+      <button id="qr-upload-btn" class="btn-primary">📤 Upload QR Code Image</button>
+      <input type="file" id="qr-file-input" accept="image/*" style="display:none;">
+      <p class="helper-text">Supports JPG, PNG, and other common image formats.</p>
+
+      <div id="qr-status-container" style="display:none;">
+        <p id="qr-status-message" class="qr-status-message"></p>
+      </div>
+
+      <div id="qr-result-container" style="display:none;">
+        <div id="qr-result-card" class="card result-card"></div>
+      </div>
+
+      <div class="card history-card">
+        <div class="history-header">
+          <h3>📜 QR Scan History</h3>
+          <div class="history-actions">
+            <button id="refresh-qr-history" class="btn-small">🔄 Refresh</button>
+            <button id="clear-qr-history-btn" class="btn-small btn-danger-outline">🗑 Clear</button>
+          </div>
+        </div>
+        <ul id="qr-history-list" class="history-list"></ul>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="view-quiz" class="view view-quiz">
+      <h1 class="view-title">🧠 Security Quiz</h1>
+
+      <div id="quiz-state" class="card quiz-state-card">
+        <p>Test your cybersecurity knowledge with 12 random questions.</p>
+        <button id="start-quiz-btn" class="btn-primary">▶ Start Quiz</button>
+      </div>
+
+      <div class="card history-card">
+        <div class="history-header">
+          <h3>📜 Quiz History</h3>
+          <div class="history-actions">
+            <button id="refresh-quiz-history" class="btn-small">🔄 Refresh</button>
+          </div>
+        </div>
+        <ul id="quiz-history-list" class="history-list"></ul>
+      </div>
+    </section>
+
+    <!-- SECURITY TIPS -->
+    <section id="view-security-tips" class="view view-security-tips">
+      <h1 class="view-title">💡 Security Tips</h1>
+
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-icon">🔐</div>
+          <h3>Screen Lock</h3>
+          <p>Always use a PIN, pattern, password, or biometric lock on your device. This is your first line of defense if it's lost or stolen.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🔄</div>
+          <h3>OS Updates</h3>
+          <p>Install operating system updates promptly. They frequently patch serious security vulnerabilities attackers actively exploit.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">👁️</div>
+          <h3>App Permissions</h3>
+          <p>Review what permissions apps request (camera, mic, location). Deny anything that doesn't make sense for the app's purpose.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🏪</div>
+          <h3>Official App Stores</h3>
+          <p>Only install apps from Google Play or trusted official sources. Sideloaded apps bypass critical security scanning.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🔑</div>
+          <h3>Two-Factor Authentication</h3>
+          <p>Enable 2FA wherever offered. Even if your password leaks, attackers still can't get in without your second factor.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🛡️</div>
+          <h3>VPN on Public Wi-Fi</h3>
+          <p>Public Wi-Fi networks can be monitored by others on the same network. A VPN encrypts your traffic to prevent snooping.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">💾</div>
+          <h3>Backups</h3>
+          <p>Regularly back up important data. This protects you against ransomware, device loss, and accidental deletion.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">⚠️</div>
+          <h3>Skepticism of Links</h3>
+          <p>Be suspicious of unexpected links in emails, texts, or QR codes — even from people you know. Verify before clicking.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="view-settings" class="view view-settings">
+      <h1 class="view-title">⚙️ Settings</h1>
+
+      <div class="card">
+        <h3>ℹ️ About HackShield</h3>
+        <p class="helper-text">Version 2.2.0 — HackShield is a 100% client-side cybersecurity awareness tool. It never requires a backend server to function.</p>
+      </div>
+
+      <div class="card">
+        <h3>🔒 Privacy</h3>
+        <p class="helper-text">All scan results, quiz history, and app data stay stored locally in your browser only (localStorage). Nothing is ever uploaded or sent anywhere.</p>
+      </div>
+
+      <div class="card">
+        <h3>📱 Installing as an App</h3>
+        <p class="helper-text">On supported browsers, use the "Add to Home Screen" or "Install App" option in your browser menu to use HackShield like a native app, including offline access.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>
